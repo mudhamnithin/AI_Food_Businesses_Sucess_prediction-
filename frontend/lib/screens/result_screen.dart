@@ -13,126 +13,196 @@ class ResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF7FAF2),
       appBar: AppBar(
-        title: const Text('Business Prediction Result'),
+        title: const Text('Prediction Result'),
         centerTitle: true,
+        elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1000),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text(
-                  'AI Business Analysis',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Center(
+                child: SizedBox(
+                  width: constraints.maxWidth > 900
+                      ? 850
+                      : constraints.maxWidth,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // HEADER
+                      const Text(
+                        'AI Food Business Analysis',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      Text(
+                        'AI-powered business location evaluation',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // MAIN SCORE
+                      _buildMainScore(),
+
+                      const SizedBox(height: 12),
+
+                      // BUSINESS SCORES
+                      _buildScores(),
+
+                      const SizedBox(height: 12),
+
+                      // DECISION
+                      _buildDecision(),
+
+                      const SizedBox(height: 12),
+
+                      // RECOMMENDATION
+                      _buildRecommendation(),
+
+                      const SizedBox(height: 16),
+
+                      // NEW PREDICTION
+                      SizedBox(
+                        height: 42,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(
+                            Icons.refresh,
+                            size: 18,
+                          ),
+                          label: const Text(
+                            'New Prediction',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+                    ],
                   ),
-                  textAlign: TextAlign.center,
                 ),
-
-                const SizedBox(height: 8),
-
-                Text(
-                  result.decision,
-                  style: const TextStyle(
-                    fontSize: 20,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: 25),
-
-                _scoreCard(),
-
-                const SizedBox(height: 20),
-
-                _detailsCard(),
-
-                const SizedBox(height: 20),
-
-                _analyticsCard(),
-
-                const SizedBox(height: 20),
-
-                _additionalAnalysisCard(),
-
-                const SizedBox(height: 30),
-
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.refresh),
-                  label: const Text(
-                    'New Prediction',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
   // ============================================================
-  // SCORE CARD
+  // MAIN SCORE
   // ============================================================
 
-  Widget _scoreCard() {
+  Widget _buildMainScore() {
     return Card(
-      elevation: 5,
+      elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(30),
+        padding: const EdgeInsets.symmetric(
+          vertical: 18,
+          horizontal: 20,
+        ),
         child: Column(
           children: [
-            const Text(
+            Text(
               'Success Probability',
               style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.w500,
               ),
             ),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 4),
 
             Text(
-              '${result.successProbability.toStringAsFixed(2)}%',
+              '${result.successProbability.toStringAsFixed(1)}%',
               style: const TextStyle(
-                fontSize: 46,
+                fontSize: 38,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 4),
+
+            Text(
+              'Grade ${result.grade}',
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 2),
+
+            Text(
+              result.overallStatus,
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey.shade700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // SCORES
+  // ============================================================
+
+  Widget _buildScores() {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Business Scores',
+              style: TextStyle(
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
 
             const SizedBox(height: 10),
 
-            Text(
-              'Grade ${result.grade}',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            Text(
-              result.overallStatus,
-              style: const TextStyle(
-                fontSize: 18,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: _scoreBox(
+                    'Business Score',
+                    result.businessScore,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _scoreBox(
+                    'AI Score',
+                    result.overallAiScore,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -140,258 +210,92 @@ class ResultScreen extends StatelessWidget {
     );
   }
 
-  // ============================================================
-  // BASIC BUSINESS ANALYSIS
-  // ============================================================
-
-  Widget _detailsCard() {
-    return _sectionCard(
-      title: 'Business Analysis',
-      icon: Icons.business,
-      children: [
-        _row(
-          'Business Score',
-          result.businessScore.toStringAsFixed(2),
-        ),
-        _row(
-          'Overall AI Score',
-          result.overallAiScore.toStringAsFixed(2),
-        ),
-        _row(
-          'Overall Status',
-          result.overallStatus,
-        ),
-        _row(
-          'Decision',
-          result.decision,
-        ),
-        _row(
-          'Confidence',
-          result.confidence,
-        ),
-        _row(
-          'Risk Level',
-          result.riskLevel,
-        ),
-        _row(
-          'Recommendation',
-          result.recommendation,
-        ),
-      ],
-    );
-  }
-
-  // ============================================================
-  // ANALYTICS
-  // ============================================================
-
-  Widget _analyticsCard() {
-    final analytics = result.analytics;
-
-    return _sectionCard(
-      title: 'Market & Location Analytics',
-      icon: Icons.analytics,
-      children: [
-        _analyticsRow(
-          'Business Health Index',
-          analytics['business_health_index'],
-        ),
-        _analyticsRow(
-          'Location Quality Index',
-          analytics['location_quality_index'],
-        ),
-        _analyticsRow(
-          'Demand Score',
-          analytics['demand_score'],
-        ),
-        _analyticsRow(
-          'Competition Score',
-          analytics['competition_score'],
-        ),
-        _analyticsRow(
-          'Affordability Score',
-          analytics['affordability_score'],
-        ),
-        _analyticsRow(
-          'Growth Score',
-          analytics['growth_score'],
-        ),
-        _analyticsRow(
-          'Commercial Activity',
-          analytics['commercial_activity_score'],
-        ),
-        _analyticsRow(
-          'Market Attractiveness',
-          analytics['market_attractiveness'],
-        ),
-        _analyticsRow(
-          'Risk Index',
-          analytics['risk_index'],
-        ),
-        _textRow(
-          'Opportunity Level',
-          analytics['opportunity_level'],
-        ),
-        _textRow(
-          'Business Readiness',
-          analytics['business_readiness'],
-        ),
-        _textRow(
-          'Investment Category',
-          analytics['investment_category'],
-        ),
-      ],
-    );
-  }
-
-  // ============================================================
-  // ADDITIONAL ANALYSIS
-  // ============================================================
-
-  Widget _additionalAnalysisCard() {
-    final sections = <Widget>[];
-
-    _addMapSection(
-      sections,
-      'Customer Analysis',
-      Icons.people,
-      result.customerAnalysis,
-    );
-
-    _addMapSection(
-      sections,
-      'SWOT Analysis',
-      Icons.balance,
-      result.swotAnalysis,
-    );
-
-    _addMapSection(
-      sections,
-      'Investment Analysis',
-      Icons.account_balance,
-      result.investmentAnalysis,
-    );
-
-    _addMapSection(
-      sections,
-      'ROI Analysis',
-      Icons.trending_up,
-      result.roiAnalysis,
-    );
-
-    _addMapSection(
-      sections,
-      'Business Performance',
-      Icons.speed,
-      result.businessPerformance,
-    );
-
-    _addMapSection(
-      sections,
-      'Business Recommendations',
-      Icons.lightbulb,
-      result.businessRecommendations,
-    );
-
-    _addMapSection(
-      sections,
-      'Executive Report',
-      Icons.description,
-      result.executiveReport,
-    );
-
-    if (sections.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Card(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: sections,
-        ),
-      ),
-    );
-  }
-
-  void _addMapSection(
-    List<Widget> sections,
+  Widget _scoreBox(
     String title,
-    IconData icon,
-    Map<String, dynamic> data,
+    double value,
   ) {
-    if (data.isEmpty) {
-      return;
-    }
-
-    sections.add(
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 12,
+        horizontal: 8,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.grey.shade300,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
         children: [
-          Row(
-            children: [
-              Icon(icon),
-              const SizedBox(width: 10),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
-          ...data.entries.map(
-            (entry) => _dynamicRow(
-              _formatLabel(entry.key),
-              entry.value,
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 11,
+              color: Colors.grey.shade600,
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 4),
+
+          Text(
+            value.toStringAsFixed(2),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );
   }
 
   // ============================================================
-  // COMMON SECTION CARD
+  // DECISION
   // ============================================================
 
-  Widget _sectionCard({
-    required String title,
-    required IconData icon,
-    required List<Widget> children,
-  }) {
+  Widget _buildDecision() {
     return Card(
-      elevation: 4,
+      elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Icon(icon),
-                const SizedBox(width: 10),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            const Text(
+              'Investment Decision',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 8),
 
-            ...children,
+            _infoRow(
+              'Decision',
+              result.decision,
+            ),
+
+            _infoRow(
+              'Confidence',
+              result.confidence,
+            ),
+
+            _infoRow(
+              'Risk Level',
+              result.riskLevel,
+            ),
+
+            _infoRow(
+              'Status',
+              result.overallStatus,
+            ),
+
+            _infoRow(
+              'Grade',
+              result.grade,
+            ),
           ],
         ),
       ),
@@ -399,184 +303,80 @@ class ResultScreen extends StatelessWidget {
   }
 
   // ============================================================
-  // ROW
+  // RECOMMENDATION
   // ============================================================
 
-  Widget _row(
+  Widget _buildRecommendation() {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'AI Recommendation',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            Text(
+              result.recommendation,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // INFO ROW
+  // ============================================================
+
+  Widget _infoRow(
     String title,
     String value,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        vertical: 9,
+        vertical: 4,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
+            flex: 2,
             child: Text(
               title,
               style: const TextStyle(
-                fontWeight: FontWeight.w600,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
-          const SizedBox(width: 20),
-          Flexible(
+
+          const SizedBox(width: 12),
+
+          Expanded(
+            flex: 3,
             child: Text(
               value,
               textAlign: TextAlign.right,
+              style: const TextStyle(
+                fontSize: 12,
+              ),
             ),
           ),
         ],
       ),
     );
-  }
-
-  // ============================================================
-  // ANALYTICS NUMBER ROW
-  // ============================================================
-
-  Widget _analyticsRow(
-    String title,
-    dynamic value,
-  ) {
-    if (value == null) {
-      return const SizedBox.shrink();
-    }
-
-    String displayValue;
-
-    if (value is num) {
-      displayValue = value.toStringAsFixed(2);
-    } else {
-      displayValue = value.toString();
-    }
-
-    return _row(
-      title,
-      displayValue,
-    );
-  }
-
-  // ============================================================
-  // TEXT ROW
-  // ============================================================
-
-  Widget _textRow(
-    String title,
-    dynamic value,
-  ) {
-    if (value == null) {
-      return const SizedBox.shrink();
-    }
-
-    return _row(
-      title,
-      value.toString(),
-    );
-  }
-
-  // ============================================================
-  // DYNAMIC ROW
-  // ============================================================
-
-  Widget _dynamicRow(
-    String title,
-    dynamic value,
-  ) {
-    if (value == null) {
-      return const SizedBox.shrink();
-    }
-
-    if (value is Map) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 6,
-        ),
-        child: ExpansionTile(
-          title: Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          children: value.entries.map<Widget>(
-            (entry) {
-              return _dynamicRow(
-                _formatLabel(entry.key.toString()),
-                entry.value,
-              );
-            },
-          ).toList(),
-        ),
-      );
-    }
-
-    if (value is List) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 6,
-        ),
-        child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 5),
-            ...value.map(
-              (item) => Padding(
-                padding: const EdgeInsets.only(
-                  left: 15,
-                  bottom: 4,
-                ),
-                child: Text(
-                  '• ${item.toString()}',
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    String displayValue;
-
-    if (value is num) {
-      displayValue = value.toStringAsFixed(2);
-    } else {
-      displayValue = value.toString();
-    }
-
-    return _row(
-      title,
-      displayValue,
-    );
-  }
-
-  // ============================================================
-  // FORMAT LABEL
-  // ============================================================
-
-  String _formatLabel(String value) {
-    return value
-        .replaceAll('_', ' ')
-        .split(' ')
-        .map(
-          (word) {
-            if (word.isEmpty) {
-              return word;
-            }
-
-            return word[0].toUpperCase() +
-                word.substring(1);
-          },
-        )
-        .join(' ');
   }
 }

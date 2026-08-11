@@ -83,11 +83,11 @@ class _HomeScreenState extends State<HomeScreen> {
         errorMessage = e.toString();
       });
     } finally {
-      if (!mounted) return;
-
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 

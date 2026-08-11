@@ -7,7 +7,7 @@ import '../models/prediction_response.dart';
 
 class PredictionService {
   static const String baseUrl =
-      'http://127.0.0.1:8000/api/predict/';
+      'https://ai-food-businesses-sucess-prediction-2.onrender.com/api/predict/';
 
   Future<PredictionResponse> predict(
     PredictionRequest request,
