@@ -1,0 +1,1 @@
+from app.business_profiles.fast_food import fast_food_profile

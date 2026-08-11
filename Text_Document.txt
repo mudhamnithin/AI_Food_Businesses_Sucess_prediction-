@@ -1,0 +1,251 @@
+## Data Collection Methodology
+
+The dataset used in this project was built using real-world geospatial and demographic data from multiple publicly available sources.
+
+### 1. OpenStreetMap (OSM) Data Collection
+
+Business and location data were collected from **OpenStreetMap (OSM)** using the **Overpass API**, an open geospatial data service maintained by the global mapping community.
+
+The collected Points of Interest (POIs) include:
+
+* Restaurants
+* Cafes
+* Tea Shops
+* Bakeries
+* Offices
+* Colleges
+* Schools
+* Hospitals
+* Parks
+* Bus Stops
+* Other commercial establishments
+
+### 2. Location Feature Engineering
+
+For every business location, a spatial analysis was performed within a **500-meter radius** to generate business intelligence features such as:
+
+* Footfall Index
+* Nearby Restaurants Count
+* Nearby Shops Count
+* Nearby Offices Count
+* Nearby Colleges Count
+* Nearby Hospitals Count
+* Nearby Parks Count
+* Distance to the Nearest Competing Tea Brand
+
+These features help estimate customer accessibility, competition intensity, and commercial activity around each location.
+
+### 3. Economic and Demographic Enrichment
+
+The location data were enriched with publicly available economic and demographic information, including:
+
+* Estimated Commercial Rent
+* Average Income of the Area
+* Population Density
+* Area Classification
+
+These attributes provide additional context about the purchasing power and business potential of each locality.
+
+### 4. Machine Learning Dataset
+
+The final dataset combines geographic, commercial, demographic, and economic information into a structured dataset that serves as the input for a machine learning model.
+
+The model predicts the **business success potential** of a selected location based on its surrounding environment, competition, accessibility, and market characteristics.
+
+This approach enables entrepreneurs and business owners to evaluate locations using data-driven insights before making investment decisions.
+Overall Dataset Creation Pipeline
+OpenStreetMap (OSM)
+        │
+        ▼
+Fetch Hyderabad POIs
+        │
+        ▼
+Download JSON for each area
+        │
+        ▼
+Merge all JSON files
+        │
+        ▼
+Create all_hyd_pois.csv
+        │
+        ▼
+Collect Hyderabad Tea Shop Locations
+        │
+        ▼
+Feature Engineering
+        │
+        ▼
+Economic & Demographic Enrichment
+        │
+        ▼
+Area Mapping
+        │
+        ▼
+Success Label Generation
+        │
+        ▼
+Final ML Dataset
+Step 1 — Collect Tea Shop Locations
+
+You first collected tea shop information across Hyderabad.
+
+Dataset:
+
+Hyderabad Tea Shops
+Latitude
+Longitude
+Name
+Address
+
+This became the base dataset.
+
+Step 2 — Collect Points of Interest (POIs)
+
+You used the OpenStreetMap Overpass API to download nearby:
+
+Tea Shops
+Cafes
+Restaurants
+Colleges
+Schools
+Offices
+Parks
+Bus Stops
+
+for different Hyderabad areas.
+
+Each area was stored as a JSON file.
+
+Madhapur.json
+
+Kukatpally.json
+
+HitechCity.json
+
+...
+
+...
+Step 3 — Merge JSON Files
+
+Then all JSON files were merged into
+
+all_hyd_pois.csv
+
+containing every collected POI with location and tags.
+
+Step 4 — Feature Engineering
+
+For every tea shop you calculated:
+
+Footfall Index
+
+Number of nearby POIs.
+
+Nearby Shops
+
+Competition.
+
+Nearby Offices
+
+Office customer potential.
+
+Nearby Colleges
+
+Student customer potential.
+
+Nearby Hospitals
+
+Hospital visitors.
+
+Nearby Restaurants
+
+Food competition.
+
+Nearby Parks
+
+Family activity.
+
+Distance to Nearest Brand Chai
+
+Brand competition.
+
+These were computed using geographic distance calculations around each shop.
+
+Step 5 — Assign Area
+
+Each shop was assigned to its nearest Hyderabad area based on latitude and longitude.
+
+Example:
+
+Shop
+
+↓
+
+Latitude
+
+Longitude
+
+↓
+
+Nearest Area
+
+↓
+
+Madhapur
+Step 6 — Add Economic Features
+
+Using the assigned area you added
+
+Rent Estimate
+Average Income
+Population Density
+
+through predefined area mappings and public information.
+
+Step 7 — Shop Age
+
+You attempted to estimate the age of each shop using OpenStreetMap timestamps or check dates when available.
+
+Step 8 — Success Label Generation
+
+The original dataset did not contain a success column.
+
+So you created one.
+
+The score considered:
+
+Footfall
+Income
+Rent
+Offices
+Colleges
+Competition
+
+Locations with higher suitability were labeled:
+
+1 = Successful
+
+Others:
+
+0 = Less Likely to Succeed
+
+This produced the training target for the Random Forest model.
+
+Final Dataset
+
+Your final dataset contained features such as:
+
+Feature	Source
+Footfall Index	OSM POIs
+Nearby Shops	OSM
+Nearby Offices	OSM
+Nearby Colleges	OSM
+Nearby Hospitals	OSM
+Nearby Restaurants	OSM
+Nearby Parks	OSM
+Distance to Brand Chai	OSM
+Rent Estimate	Area Mapping/Public Estimates
+Average Income	Area Mapping/Public Estimates
+Population Density	Area Mapping/Public Estimates
+Shop Age	OSM Metadata
+Success Label	Generated using scoring rules

@@ -1,0 +1,144 @@
+# Food Business Success Prediction Model – Performance Review
+
+## Dataset Summary
+
+* **Total Records:** 1,856
+* **Features Used:** 10
+* **Target Variable:** `success_label`
+* **Class Distribution:**
+
+  * Successful Businesses: **427 (23.01%)**
+  * Unsuccessful Businesses: **1,429 (76.99%)**
+
+To address the class imbalance, **SMOTE (Synthetic Minority Oversampling Technique)** was applied only to the training dataset before model training.
+
+---
+
+# Machine Learning Model
+
+* **Algorithm:** Random Forest Classifier
+* **Number of Trees:** 350
+* **Maximum Depth:** 12
+* **Minimum Samples Split:** 4
+* **Minimum Samples Leaf:** 3
+* **Class Weight:** Balanced
+* **Feature Scaling:** StandardScaler
+* **Train-Test Split:** 75% Training, 25% Testing
+* **Cross Validation:** 5-Fold
+
+---
+
+# Model Performance
+
+## Test Accuracy
+
+**93.75%**
+
+The model correctly classified **93.75%** of unseen test samples.
+
+---
+
+## Cross Validation
+
+**92.56% ± 1.43%**
+
+The low standard deviation indicates that the model performs consistently across different data splits and is unlikely to be overfitted to a single train-test partition.
+
+---
+
+# Classification Report
+
+| Class            | Precision |   Recall | F1-Score | Support |
+| ---------------- | --------: | -------: | -------: | ------: |
+| Unsuccessful (0) |  **0.97** | **0.95** | **0.96** |     357 |
+| Successful (1)   |  **0.84** | **0.90** | **0.87** |     107 |
+
+Overall Accuracy: **93.75%**
+
+Macro Average:
+
+* Precision: **0.91**
+* Recall: **0.92**
+* F1 Score: **0.91**
+
+Weighted Average:
+
+* Precision: **0.94**
+* Recall: **0.94**
+* F1 Score: **0.94**
+
+---
+
+# Interpretation
+
+### Precision (Success Class) = 0.84
+
+When the model predicts that a business location is likely to succeed, it is correct **84%** of the time.
+
+---
+
+### Recall (Success Class) = 0.90
+
+The model successfully identifies **90%** of truly successful business locations.
+
+---
+
+### F1-Score = 0.87
+
+The model maintains a strong balance between precision and recall, indicating reliable performance for identifying successful business opportunities.
+
+---
+
+# Feature Importance Ranking
+
+| Rank | Feature                        | Importance |
+| ---: | ------------------------------ | ---------: |
+|    1 | Footfall Index                 |     0.2405 |
+|    2 | Nearby Offices Count           |     0.1925 |
+|    3 | Average Income of Area         |     0.1757 |
+|    4 | Rent Estimate                  |     0.1526 |
+|    5 | Nearby Restaurants Count       |     0.1356 |
+|    6 | Distance to Nearest Brand Chai |     0.0709 |
+|    7 | Nearby Colleges Count          |     0.0211 |
+|    8 | Nearby Parks Count             |     0.0073 |
+|    9 | Nearby Shops Count             |     0.0038 |
+|   10 | Nearby Hospitals Count         |     0.0000 |
+
+---
+
+# Key Findings
+
+The model indicates that the most influential factors affecting business success are:
+
+* High customer footfall
+* Strong office presence
+* Higher purchasing power (average income)
+* Commercial rent levels
+* Nearby restaurant activity
+
+Less influential features in the current dataset include nearby parks, shops, and hospitals.
+
+---
+
+# Strengths
+
+* High overall prediction accuracy (93.75%)
+* Strong cross-validation performance (92.56%)
+* Good generalization across unseen data
+* Handles imbalanced classes using SMOTE
+* Uses real-world location, demographic, and economic features
+* Suitable for deployment as the prediction engine of the Food Business Prediction application
+
+---
+
+# Current Limitations
+
+* Success labels are generated using a rule-based scoring approach rather than verified historical business outcomes.
+* The current model is trained using data collected from Hyderabad only.
+* Predictions should be interpreted as **business potential estimates**, not guarantees of commercial success.
+
+---
+
+# Conclusion
+
+The Random Forest model demonstrates strong predictive performance and stable generalization, making it suitable as the Version 1 prediction engine for the Food Business Prediction platform. With an accuracy of **93.75%** and consistent cross-validation performance, the model provides a solid foundation for evaluating business location potential using geospatial, demographic, and commercial features.

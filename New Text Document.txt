@@ -1,0 +1,47 @@
+Your actual model performance
+Metric	Score
+Accuracy	94%
+Precision — Class 0	97%
+Recall — Class 0	95%
+F1 — Class 0	96%
+Precision — Class 1	84%
+Recall — Class 1	90%
+F1 — Class 1	87%
+Macro F1	91%
+Weighted F1	94%
+Cross-validation	92.56% ± 1.43%
+
+The most important number for your app is:
+
+Model Accuracy: 94%
+
+And because your classes are imbalanced, I would also prominently show:
+
+F1 Score (Success Class): 87%
+
+That is more informative than showing only 94% accuracy.
+
+What I recommend displaying in your app
+
+On the Home Screen, add a small section:
+
+AI MODEL PERFORMANCE
+────────────────────────
+
+Accuracy             94%
+Precision            84%
+Recall               90%
+F1 Score             87%
+
+Cross Validation     92.56% ± 1.43%
+
+Then separately show the individual business prediction:
+
+THIS BUSINESS
+
+Success Probability     92.47%
+Grade                   A+
+Decision                Excellent Opportunity
+Risk                    Very Low
+
+These are two different things:
